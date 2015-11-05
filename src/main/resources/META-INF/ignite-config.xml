@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+
+<!-- Ignite configuration with all defaults and enabled p2p deployment and 
+	enabled events. -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
+		<!-- Set to true to enable distributed class loading for examples, default is false. -->
+		<property name="peerClassLoadingEnabled" value="${ignite.peerclassloading.enabled}" />
+
+		<property name="gridName" value="${ignite.grid.name}" />
+		
+		<property name="deploymentMode">
+			<util:constant static-field="org.apache.ignite.configuration.DeploymentMode.${ignite.deployment.mode}" />
+		</property>
+
+		<!-- Metrics log each 30 min -->
+		<property name="metricsLogFrequency" value="${ignite.log.metrics.frequency}" />
+
+		<property name="marshaller">
+			<bean class="org.apache.ignite.marshaller.optimized.OptimizedMarshaller">
+				<!-- Set to false to allow non-serializable objects in examples, default is true. -->
+				<property name="requireSerializable" value="${ignite.serializable.required}" />
+			</bean>
+		</property>
+
+		<!-- Enable task execution events for examples. -->
+		<property name="includeEventTypes">
+			<list>
+				<!--Cache events -->
+				<util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_PUT" />
+				<util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_READ" />
+				<util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_REMOVED" />
+			</list>
+		</property>
+
+		<!-- Explicitly configure TCP discovery SPI to provide list of initial 
+			nodes. -->
+		<property name="discoverySpi" ref="#{ '${ignite.discoverySpi.staticIpDiscovery.ips}'.isEmpty() ? 'multicastDiscovery' : 'staticIpDiscovery' }"/> 
+
+	</bean>
+
+	<bean name="multicastDiscovery" class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
+		<property name="networkTimeout" value="10000" />
+		<property name="ipFinder">
+			<bean
+				class="org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder">
+				<property name="multicastGroup" value="${ignite.multicast.address}" />
+				<property name="multicastPort" value="${ignite.multicast.port}" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean name="staticIpDiscovery" class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
+		<property name="ipFinder">
+			<bean
+				class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">
+				<property name="addresses" ref ="ipsList"/>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="ipsList" class="org.springframework.util.StringUtils"
+		factory-method="commaDelimitedListToSet">
+		<constructor-arg type="java.lang.String"
+			value="${ignite.discoverySpi.staticIpDiscovery.ips}" />
+	</bean>
+	
+	<!-- In order to use system properties with EL we need this bean. -->
+	<bean id="placeholderProperties"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" depends-on="environment">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="order" value="1" />
+	</bean>
+</beans>
