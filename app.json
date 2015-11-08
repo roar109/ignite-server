@@ -1,17 +1,17 @@
 {
+	"package":"org.rage",
 	"systemProperties":{
 		"ignite.deployment.mode":"CONTINUOUS",
 		"ignite.discoverySpi.staticIpDiscovery.ips":"",
 		"ignite.grid.name":"datafabric",
-		"IGNITE_HOME":"C:\apps\jboss",
+		"IGNITE_HOME":"/tmp",
 		"ignite.log.metrics.frequency":"1800000",
 		"ignite.multicast.address":"228.1.2.4",
-		"ignite.multicast.port":"47500",
+		"ignite.multicast.port":"47400",
 		"ignite.peerclassloading.enabled":"true",
 		"IGNITE_PERFORMANCE_SUGGESTIONS_DISABLED":"true",
 		"ignite.serializable.required":"false"
 	},
-	"package":"org.rage"
 	"resources":[
 		{
 			"resourceName":"META-INF/beans.xml",
