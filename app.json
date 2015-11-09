@@ -3,7 +3,7 @@
 	"systemProperties":{
 		"ignite.deployment.mode":"CONTINUOUS",
 		"ignite.discoverySpi.staticIpDiscovery.ips":"",
-		"ignite.grid.name":"datafabric",
+		"ignite.grid.name":"ignite-server",
 		"IGNITE_HOME":"/tmp",
 		"ignite.log.metrics.frequency":"1800000",
 		"ignite.multicast.address":"228.1.2.4",
