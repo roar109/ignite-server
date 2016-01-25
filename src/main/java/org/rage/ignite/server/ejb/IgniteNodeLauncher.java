@@ -1,5 +1,6 @@
 package org.rage.ignite.server.ejb;
 
+import org.apache.ignite.Ignite;
 import org.apache.ignite.Ignition;
 import org.apache.log4j.Logger;
 import org.rage.ignite.server.constant.Constants;
@@ -30,6 +31,7 @@ public class IgniteNodeLauncher {
 	 */
 	private final static transient Logger log = Logger.getLogger(IgniteNodeLauncher.class);
 	private final static Boolean CANCEL_CURRENT_JOBS = Boolean.FALSE;
+	private Ignite ignite = null;
 
 	/**
 	 * Represents startIgnite invoked after bean has been initialized and
@@ -44,7 +46,7 @@ public class IgniteNodeLauncher {
 
 		IgniteParameterValidator.validateApacheIgniteConfig();
 
-		Ignition.start(Constants.IGNITE_CONFIGURATION_FILE);
+		ignite = Ignition.start(Constants.IGNITE_CONFIGURATION_FILE);
 
 		log.info(">> Apache Ignite started successfully on this node");
 	}
@@ -61,4 +63,10 @@ public class IgniteNodeLauncher {
 		Ignition.stop(CANCEL_CURRENT_JOBS);
 		log.info(">> Apache Ignite stopped successfully on this node");
 	}
+
+	public Ignite getIgnite() {
+		return ignite;
+	}
+	
+	
 }

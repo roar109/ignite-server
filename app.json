@@ -4,11 +4,11 @@
 		"ignite.deployment.mode":"CONTINUOUS",
 		"ignite.discoverySpi.staticIpDiscovery.ips":"",
 		"ignite.grid.name":"ignite-server",
-		"IGNITE_HOME":"/tmp",
+		"IGNITE_HOME":"c:\apps\jboss",
 		"ignite.log.metrics.frequency":"1800000",
 		"ignite.multicast.address":"228.1.2.4",
 		"ignite.multicast.port":"47400",
-		"ignite.peerclassloading.enabled":"true",
+		"ignite.peerclassloading.enabled":"false",
 		"IGNITE_PERFORMANCE_SUGGESTIONS_DISABLED":"true",
 		"ignite.serializable.required":"false"
 	},
@@ -20,6 +20,11 @@
 		{
 			"resourceName":"META-INF/ignite-config.xml",
 			"targetPath":"classes/META-INF/ignite-config.xml"
+		}
+	],
+	"restResources":[
+		{
+			"class":"org.rage.ignite.server.rest.ClusterInformationRest"
 		}
 	]
 }
